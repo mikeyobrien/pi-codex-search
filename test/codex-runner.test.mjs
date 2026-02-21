@@ -7,6 +7,8 @@ import {
   parseCodexJsonlEvents,
   coerceStructuredResult,
   normalizeAsOfPeriod,
+  normalizeQuestions,
+  resolveParallelism,
   createProgressCounters,
   updateProgressCountersFromEvent,
   formatProgressStatus
@@ -107,6 +109,19 @@ test("normalizeAsOfPeriod falls back to early", () => {
   assert.equal(normalizeAsOfPeriod("late"), "late");
   assert.equal(normalizeAsOfPeriod("MID"), "mid");
   assert.equal(normalizeAsOfPeriod("nonsense"), "early");
+});
+
+test("normalizeQuestions trims empty entries", () => {
+  const questions = normalizeQuestions(["  first  ", "", "   ", "second", 42, null]);
+  assert.deepEqual(questions, ["first", "second"]);
+});
+
+test("resolveParallelism clamps to question count and configured maximum", () => {
+  assert.equal(resolveParallelism(undefined, 4, 5), 4);
+  assert.equal(resolveParallelism(10, 4, 5), 4);
+  assert.equal(resolveParallelism(10, 9, 5), 5);
+  assert.equal(resolveParallelism(0, 3, 5), 1);
+  assert.equal(resolveParallelism(undefined, 0, 5), 0);
 });
 
 test("progress counters increment for search/open_page events", () => {

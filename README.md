@@ -5,8 +5,9 @@ Pi extension package that exposes Codex web research as a native Pi tool.
 ## What it adds
 
 - **Tool:** `codex_search`
-- **Command:** `/codex-search <question>`
+- **Command:** `/codex-search <question> [|| <question2> ...]`
 - **Live progress updates:** elapsed time + search/page counters while Codex runs
+- **Parallel batches:** pass multiple questions and the tool runs them concurrently
 
 ## Demo
 
@@ -80,7 +81,7 @@ You should see one of:
 ### Quick test after install
 
 ```bash
-pi -p --no-session "Use codex_search with question 'What is the latest stable npm version?' as_of_period 'early' and as_of_year 2026. Return only a short answer."
+pi -p --no-session "Use codex_search with questions ['What is the latest stable npm version?'] as_of_period 'early' and as_of_year 2026. Return only a short answer."
 ```
 
 ### Run-only extension (without install)
@@ -93,9 +94,14 @@ pi -e /path/to/pi-codex-search/extensions/codex-search/index.ts
 
 ### `codex_search`
 
+> Breaking change: this tool now accepts `questions` (array) instead of `question`.
+
 Parameters:
 
-- `question` (required): research question
+- `questions` (required): list of research questions
+  - one question → single search behavior
+  - multiple questions → run in parallel
+- `parallelism` (optional): worker count for batch runs (default: auto, max: `5`)
 - `as_of_period` (optional): `early|mid|late` (default: `early`)
 - `as_of_year` (optional): reference year (default: current UTC year)
 - `model` (optional): Codex model override
@@ -105,9 +111,10 @@ Parameters:
 
 Returns:
 
-- human-readable answer with `as_of`, confidence, and source URLs
-- structured details including telemetry (`searchTrace`, `usage`, `commandEvents`)
-- progress summary (`elapsedSeconds`, `searches`, `pagesOpened`)
+- single-question call: same human-readable answer format with `as_of`, confidence, and source URLs
+- multi-question call: batch summary plus per-question result sections
+- structured details including telemetry (`searchTrace`, `usage`, `commandEvents`) for each question
+- progress summary (`elapsedSeconds`, `searches`, `pagesOpened`) per question, plus batch summary
 
 If Codex emits search activity but no final structured output, the tool returns `reason: "no_final_output"` and a hint to retry with a larger `timeout_sec`.
 
