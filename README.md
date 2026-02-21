@@ -57,7 +57,7 @@ This writes to `.pi/settings.json` in the current project.
 ### Local path install (development)
 
 ```bash
-pi install /home/mobrienv/projects/pi-codex-search
+pi install /path/to/pi-codex-search
 ```
 
 ### Verify install
@@ -70,7 +70,7 @@ You should see one of:
 
 - `git:github.com/mikeyobrien/pi-codex-search`
 - `https://github.com/mikeyobrien/pi-codex-search`
-- `/home/mobrienv/projects/pi-codex-search`
+- `/path/to/pi-codex-search` (if installed from a local checkout)
 
 ### Quick test after install
 
@@ -81,7 +81,7 @@ pi -p --no-session "Use codex_search with question 'What is the latest stable np
 ### Run-only extension (without install)
 
 ```bash
-pi -e /home/mobrienv/projects/pi-codex-search/extensions/codex-search/index.ts
+pi -e /path/to/pi-codex-search/extensions/codex-search/index.ts
 ```
 
 ## Tool API
