@@ -6,6 +6,7 @@ Pi extension package that exposes Codex web research as a native Pi tool.
 
 - **Tool:** `codex_search`
 - **Command:** `/codex-search <question>`
+- **Live progress updates:** elapsed time + search/page counters while Codex runs
 
 The tool runs Codex in a locked search profile:
 
@@ -94,7 +95,7 @@ Parameters:
 - `as_of_period` (optional): `early|mid|late` (default: `early`)
 - `as_of_year` (optional): reference year (default: current UTC year)
 - `model` (optional): Codex model override
-- `timeout_sec` (optional): default `120`, max `600`
+- `timeout_sec` (optional): default `1800`, max `7200` (very permissive)
 - `max_sources` (optional): default `8`, max `20`
 - `fail_on_command_event` (optional): default `true`
 
@@ -102,6 +103,9 @@ Returns:
 
 - human-readable answer with `as_of`, confidence, and source URLs
 - structured details including telemetry (`searchTrace`, `usage`, `commandEvents`)
+- progress summary (`elapsedSeconds`, `searches`, `pagesOpened`)
+
+If Codex emits search activity but no final structured output, the tool returns `reason: "no_final_output"` and a hint to retry with a larger `timeout_sec`.
 
 ## Development
 

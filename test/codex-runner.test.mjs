@@ -6,7 +6,10 @@ import {
   normalizeSources,
   parseCodexJsonlEvents,
   coerceStructuredResult,
-  normalizeAsOfPeriod
+  normalizeAsOfPeriod,
+  createProgressCounters,
+  updateProgressCountersFromEvent,
+  formatProgressStatus
 } from "../lib/codex-runner.mjs";
 
 test("buildCodexPrompt includes policy constraints and as_of framing", () => {
@@ -104,4 +107,50 @@ test("normalizeAsOfPeriod falls back to early", () => {
   assert.equal(normalizeAsOfPeriod("late"), "late");
   assert.equal(normalizeAsOfPeriod("MID"), "mid");
   assert.equal(normalizeAsOfPeriod("nonsense"), "early");
+});
+
+test("progress counters increment for search/open_page events", () => {
+  const counters = createProgressCounters();
+
+  const searchEvent = {
+    type: "item.completed",
+    item: {
+      type: "web_search",
+      query: "node latest lts",
+      action: { type: "search", query: "node latest lts" }
+    }
+  };
+
+  const openEvent = {
+    type: "item.completed",
+    item: {
+      type: "web_search",
+      action: { type: "open_page", url: "https://nodejs.org/en/about/previous-releases" }
+    }
+  };
+
+  const searchResult = updateProgressCountersFromEvent(searchEvent, counters);
+  const openResult = updateProgressCountersFromEvent(openEvent, counters);
+
+  assert.equal(searchResult.changed, true);
+  assert.equal(openResult.changed, true);
+  assert.equal(counters.searches, 1);
+  assert.equal(counters.pagesOpened, 1);
+  assert.match(counters.lastAction, /open:/i);
+});
+
+test("formatProgressStatus includes elapsed time and counters", () => {
+  const counters = createProgressCounters();
+  counters.searches = 3;
+  counters.pagesOpened = 2;
+  counters.lastAction = "search: npm latest";
+
+  const startedAt = Date.now() - 2500;
+  const text = formatProgressStatus(counters, startedAt);
+
+  assert.match(text, /Running Codex web search/);
+  assert.match(text, /elapsed: \d+s/);
+  assert.match(text, /searches: 3/);
+  assert.match(text, /pages opened: 2/);
+  assert.match(text, /last action: search: npm latest/);
 });
