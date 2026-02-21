@@ -8,6 +8,7 @@ Pi extension package that exposes Codex web research as a native Pi tool.
 - **Command:** `/codex-search <question> [|| <question2> ...]`
 - **Live progress updates:** elapsed time + search/page counters while Codex runs
 - **Parallel batches:** pass multiple questions and the tool runs them concurrently
+- **Per-run observability:** live batch view includes each query's status/action/counters
 
 ## Demo
 
@@ -114,6 +115,7 @@ Returns:
 - single-question call: same human-readable answer format with `as_of`, confidence, and source URLs
 - multi-question call: batch summary plus per-question result sections
 - structured details including telemetry (`searchTrace`, `usage`, `commandEvents`) for each question
+- `details.runStates` with per-query end-state (`status`, `lastAction`, `elapsedSeconds`, counters)
 - progress summary (`elapsedSeconds`, `searches`, `pagesOpened`) per question, plus batch summary
 
 If Codex emits search activity but no final structured output, the tool returns `reason: "no_final_output"` and a hint to retry with a larger `timeout_sec`.

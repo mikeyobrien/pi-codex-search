@@ -140,7 +140,7 @@ test("runCodexSearch caps parallelism at 5", async () => {
   assert.ok(maxInFlight <= 5);
 });
 
-test("runCodexSearch emits batch progress updates", async () => {
+test("runCodexSearch emits batch and per-run progress updates", async () => {
   const updates = [];
 
   await runCodexSearch(
@@ -150,7 +150,14 @@ test("runCodexSearch emits batch progress updates", async () => {
     },
     {
       onUpdate: (text) => updates.push(text),
-      runSingle: async (params) => {
+      runSingle: async (params, options) => {
+        options.onUpdate?.([
+          "Running Codex web search...",
+          "elapsed: 3s",
+          "searches: 2",
+          "pages opened: 1",
+          "last action: search: test query"
+        ].join("\n"));
         await sleep(1);
         return okResult(params.question);
       }
@@ -160,6 +167,8 @@ test("runCodexSearch emits batch progress updates", async () => {
   assert.ok(updates.some((text) => text.includes("Running parallel Codex web searches...")));
   assert.ok(updates.some((text) => text.includes("Starting query 1/2: q1")));
   assert.ok(updates.some((text) => text.includes("Finished query 2/2: ok")));
+  assert.ok(updates.some((text) => text.includes("runs:")));
+  assert.ok(updates.some((text) => text.includes("[1/2] q1 | running | 3s | s=2 p=1 | search: test query")));
 });
 
 test("runCodexSearch reports partial failures", async () => {
@@ -168,7 +177,15 @@ test("runCodexSearch reports partial failures", async () => {
       questions: ["ok-1", "bad", "ok-2"]
     },
     {
-      runSingle: async (params) => {
+      runSingle: async (params, options) => {
+        options.onUpdate?.([
+          "Running Codex web search...",
+          "elapsed: 4s",
+          "searches: 3",
+          "pages opened: 2",
+          "last action: open: https://example.com"
+        ].join("\n"));
+
         if (params.question === "bad") return errorResult(params.question, "bad_query");
         return okResult(params.question);
       }
@@ -180,6 +197,12 @@ test("runCodexSearch reports partial failures", async () => {
   assert.equal(result.details.summary.total, 3);
   assert.equal(result.details.summary.succeeded, 2);
   assert.equal(result.details.summary.failed, 1);
+
+  const badRun = result.details.runStates.find((entry) => entry.question === "bad");
+  assert.equal(badRun.status, "failed");
+  assert.equal(badRun.searches, 3);
+  assert.equal(badRun.pagesOpened, 2);
+  assert.match(badRun.lastAction, /bad_query/i);
 });
 
 test("runCodexSearch returns all_failed when every question fails", async () => {

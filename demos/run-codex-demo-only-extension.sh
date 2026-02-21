@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd /home/mobrienv/projects/pi-codex-search
-pi -p --no-session --no-extensions --no-skills --no-prompt-templates --no-themes \
+pi --no-session --no-extensions --no-skills --no-prompt-templates --no-themes \
   -e /home/mobrienv/projects/pi-codex-search/extensions/codex-search/index.ts \
   "Use codex_search with questions ['What is the latest stable npm version?','What is the latest stable pnpm version?'] parallelism 2 as_of_period 'early' as_of_year 2026 timeout_sec 180 max_sources 3. Return concise answers for both questions."
