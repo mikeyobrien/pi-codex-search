@@ -1,0 +1,25 @@
+{
+  "name": "pi-codex-search",
+  "version": "0.1.0",
+  "description": "Pi extension: native Codex-powered web search tool with structured outputs",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "codex",
+    "search"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/codex-search/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*",
+    "@sinclair/typebox": "*"
+  }
+}
