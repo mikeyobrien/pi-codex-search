@@ -18,4 +18,4 @@
 - Initial smoke run failed due Codex JSON Schema constraint requiring all `properties` keys to appear in `required`.
 - Fixed by adding `notes` to `required` in `CODEX_RESULT_SCHEMA`.
 - Final smoke run passed with valid structured JSON output and web-search event telemetry.
-- Commit: `fc34efc` — `feat: add codex-search pi extension with structured output`
+- Commit: `9c53a9e` — `feat: add codex-search pi extension with structured output`
