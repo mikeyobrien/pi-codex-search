@@ -30,23 +30,35 @@ It combines three Codex output modes for reliability:
 
 ## Install with `pi install`
 
-### Global install (recommended)
+### Global install from GitHub (recommended)
 
 ```bash
-pi install /home/mobrienv/projects/pi-codex-search
+pi install git:github.com/mikeyobrien/pi-codex-search
+```
+
+You can also use the HTTPS URL:
+
+```bash
+pi install https://github.com/mikeyobrien/pi-codex-search
 ```
 
 This writes the package into your global Pi config at:
 
 - `~/.pi/agent/settings.json` → `packages[]`
 
-### Project-local install
+### Project-local install from GitHub
 
 ```bash
-pi install -l /home/mobrienv/projects/pi-codex-search
+pi install -l git:github.com/mikeyobrien/pi-codex-search
 ```
 
 This writes to `.pi/settings.json` in the current project.
+
+### Local path install (development)
+
+```bash
+pi install /home/mobrienv/projects/pi-codex-search
+```
 
 ### Verify install
 
@@ -54,8 +66,10 @@ This writes to `.pi/settings.json` in the current project.
 pi list
 ```
 
-You should see:
+You should see one of:
 
+- `git:github.com/mikeyobrien/pi-codex-search`
+- `https://github.com/mikeyobrien/pi-codex-search`
 - `/home/mobrienv/projects/pi-codex-search`
 
 ### Quick test after install
