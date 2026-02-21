@@ -28,15 +28,43 @@ It combines three Codex output modes for reliability:
    - usage metadata
    - policy checks (command-like event detection)
 
-## Install in Pi
+## Install with `pi install`
 
-From this repo:
+### Global install (recommended)
 
 ```bash
 pi install /home/mobrienv/projects/pi-codex-search
 ```
 
-Or as run-only extension while testing:
+This writes the package into your global Pi config at:
+
+- `~/.pi/agent/settings.json` → `packages[]`
+
+### Project-local install
+
+```bash
+pi install -l /home/mobrienv/projects/pi-codex-search
+```
+
+This writes to `.pi/settings.json` in the current project.
+
+### Verify install
+
+```bash
+pi list
+```
+
+You should see:
+
+- `/home/mobrienv/projects/pi-codex-search`
+
+### Quick test after install
+
+```bash
+pi -p --no-session "Use codex_search with question 'What is the latest stable npm version?' as_of_period 'early' and as_of_year 2026. Return only a short answer."
+```
+
+### Run-only extension (without install)
 
 ```bash
 pi -e /home/mobrienv/projects/pi-codex-search/extensions/codex-search/index.ts
