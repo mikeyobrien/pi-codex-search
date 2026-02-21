@@ -6,6 +6,7 @@ Set Padding 20
 Set Framerate 30
 Set Shell "bash"
 
+Hide
 Type "cd /home/mobrienv/projects/pi-codex-search"
 Enter
 Sleep 800ms
@@ -18,6 +19,7 @@ Sleep 500ms
 Type "tmux send-keys -t codexdemo 'bash demos/run-codex-demo.sh' C-m"
 Enter
 Sleep 700ms
+Show
 Type "tmux attach -t codexdemo"
 Enter
 Sleep 55s
