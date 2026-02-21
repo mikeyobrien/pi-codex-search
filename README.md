@@ -8,6 +8,10 @@ Pi extension package that exposes Codex web research as a native Pi tool.
 - **Command:** `/codex-search <question>`
 - **Live progress updates:** elapsed time + search/page counters while Codex runs
 
+## Demo
+
+![codex_search live progress demo](./demos/codex-search-progress.gif)
+
 The tool runs Codex in a locked search profile:
 
 - `codex --search exec`
@@ -113,6 +117,12 @@ If Codex emits search activity but no final structured output, the tool returns 
 
 ```bash
 npm test
+```
+
+### Regenerate demo GIF
+
+```bash
+nix-shell -p python312Packages.pillow --run "python3 scripts/make-demo-gif.py"
 ```
 
 ## Requirements
